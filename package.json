@@ -1,17 +1,53 @@
 {
   "name": "task-sharding",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "Shards tasks in a cluster using zookeeper and consistent hashing",
   "scripts": {
     "start": "cd examples; docker-compose up -d && docker-compose logs -f app",
     "stop": "cd examples; docker-compose kill && docker-compose rm -f",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint lib/*; true",
+    "test": "mocha"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "hashring": "^3.2.0",
     "zoologist": "^0.5.8"
-  }
+  },
+  "author": {
+    "name": "LivePersonInc",
+    "email": "eitanya@liveperson.com"
+  },
+  "contributors": [
+    {
+        "name": "Eitan Yarden",
+        "email": "eitanya@liveperson.com"
+    }
+  ],
+  "devDependencies": {
+      "chai": "^3.5.0",
+      "eslint": "^3.13.1",
+      "mocha": "^3.2.0",
+      "mockery": "^2.0.0",
+      "sinon": "^1.17.7"
+  },
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/LivePersonInc/task-sharding.git"
+  },
+  "keywords": [
+      "zookeeper",
+      "consistent",
+      "hashing",
+      "node",
+      "nodejs",
+      "sharding",
+      "cluster",
+      "task",
+      "shard"
+  ],
+  "readme": "README.md",
+  "engines": {
+      "node": ">=6.9.1",
+      "npm": ">=3.0"
+  },
+  "license": "MIT"
 }

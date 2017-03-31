@@ -1,4 +1,8 @@
-# task-sharding-demo
+# task-sharding
+
+[![npm version](https://img.shields.io/npm/v/task-sharding.svg)](https://www.npmjs.com/package/task-sharding)
+[![npm downloads](https://img.shields.io/npm/dm/task-sharding.svg)](https://www.npmjs.com/package/task-sharding)
+[![license](https://img.shields.io/npm/l/task-sharding.svg)](LICENSE)
 
 This project demonstrates sharding responsiblity between nodes in a cluster, using zookeeper and constitent hashing
 
