@@ -13,7 +13,7 @@ This project demonstrates sharding responsiblity between nodes in a cluster, usi
 ```js
 const TaskSharding = require('task-sharding').TaskSharding;
 
-new TaskSharding(
+const taskSharding = new TaskSharding(
 	'127.0.0.1:2181', // String, zooKeeper connection string
 	[{ id: 1 },{ id: 2 },{ id: 3 }], // Array of tasks object with id property
 	{
@@ -25,9 +25,6 @@ new TaskSharding(
 ### Events
 
 ```js
-
-const taskSharding = new TaskSharding(zkConnStr, allTasks);
-
 taskSharding.on('taskAdded', (newTaskConf, taskInfoAdder) => {
   // Your logic here
 });
