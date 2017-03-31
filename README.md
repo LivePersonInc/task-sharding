@@ -4,12 +4,28 @@ This project demonstrates sharding responsiblity between nodes in a cluster, usi
 
 ## Usage
 
+### TaskSharding class
+
 ```js
 const TaskSharding = require('../lib/task-sharding.js');
 const zkConnStr = `${process.env.ZK_PORT_2181_TCP_ADDR}:${process.env.ZK_PORT_2181_TCP_PORT}`;
 
 // Array of object with id property
 const allTasks = [{ id: 1 },{ id: 2 },{ id: 3 }];
+
+new TaskSharding(
+	zkConnStr, // String, zooKeeper connection string
+	allTasks, // Array of tasks object with id property
+	{
+		serviceName: String, // path in the zooKeeper. Default is 'my/service/name/v1'.
+		delay: Number, // miliseconds from cluster change till firing the 'taskAdded','taskRemoved'. Default is 1000.
+	});
+
+```
+
+### Events
+
+```js
 
 const taskSharding = new TaskSharding(zkConnStr, allTasks);
 
@@ -34,24 +50,64 @@ taskSharding.on('taskRemoved', (oldTaskInfo) => {
 In order to run it, download and unzip the repository. Then run:
 
 ```sh
+git clone https://github.com/LivePersonInc/task-sharding.git
 cd task-sharding
-npm install
-cd examples
-docker-compose up -d && docker-compose logs -f app
+npm i
+npm start
 ```
 In the logs you can see the nodes' statements regarding their task responsablity.
-
 You can addd nodes to the cluster by opening another shell window and:
 
 ```sh
 cd task-sharding/examples
-docker-compose scale app=5
+docker-compose scale app=10
 ```
 
 In the logs you will see new nodes coming in and new work division. Then you can kill some of the nodes by cahnging the scale again:
 ```sh
-docker-compose scale app=2
+cd task-sharding/examples
+docker-compose scale app=1
+```
+The output should look like this:
+
+```
+app_1  | add Alice
+app_1  | add Bob
+app_1  | add Charlie
+app_1  | add Dave
+app_1  | add Eve
+
+# after docker-compose scale app=5
+app_1  | remove Alice
+app_1  | remove Bob
+app_1  | remove Charlie
+app_1  | remove Dave
+app_1  | remove Eve
+app_2  | add Charlie
+app_5  | add Eve
+app_10 | add Bob
+app_10 | add Dave
+app_8  | add Alice
+
+# after docker-compose scale app=1
+examples_app_2 exited with code 137
+examples_app_4 exited with code 137
+examples_app_9 exited with code 137
+examples_app_6 exited with code 137
+examples_app_3 exited with code 137
+examples_app_7 exited with code 137
+examples_app_5 exited with code 137
+examples_app_10 exited with code 137
+examples_app_8 exited with code 137
+app_1  | add Alice
+app_1  | add Bob
+app_1  | add Charlie
+app_1  | add Dave
+app_1  | add Eve
 ```
 
-
-
+You can stop the servers using
+```sh
+cd task-sharding
+npm stop
+```
