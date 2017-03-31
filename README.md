@@ -12,19 +12,14 @@ This project demonstrates sharding responsiblity between nodes in a cluster, usi
 
 ```js
 const TaskSharding = require('task-sharding').TaskSharding;
-const zkConnStr = `${process.env.ZK_PORT_2181_TCP_ADDR}:${process.env.ZK_PORT_2181_TCP_PORT}`;
-
-// Array of object with id property
-const allTasks = [{ id: 1 },{ id: 2 },{ id: 3 }];
 
 new TaskSharding(
-	zkConnStr, // String, zooKeeper connection string
-	allTasks, // Array of tasks object with id property
+	'127.0.0.1:2181', // String, zooKeeper connection string
+	[{ id: 1 },{ id: 2 },{ id: 3 }], // Array of tasks object with id property
 	{
 		serviceName: String, // path in the zooKeeper. Default is 'my/service/name/v1'.
 		delay: Number, // miliseconds from cluster change till firing the 'taskAdded','taskRemoved'. Default is 1000.
 	});
-
 ```
 
 ### Events
