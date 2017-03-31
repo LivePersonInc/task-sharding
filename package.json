@@ -49,5 +49,6 @@
       "node": ">=6.9.1",
       "npm": ">=3.0"
   },
+  "main": "index.js",
   "license": "MIT"
 }
