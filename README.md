@@ -11,7 +11,7 @@ This project demonstrates sharding responsiblity between nodes in a cluster, usi
 ### TaskSharding class
 
 ```js
-const TaskSharding = require('../lib/task-sharding.js');
+const TaskSharding = require('task-sharding').TaskSharding;
 const zkConnStr = `${process.env.ZK_PORT_2181_TCP_ADDR}:${process.env.ZK_PORT_2181_TCP_PORT}`;
 
 // Array of object with id property
