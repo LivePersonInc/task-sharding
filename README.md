@@ -1,5 +1,7 @@
 # task-sharding
 
+
+[![build](https://api.travis-ci.org/LivePersonInc/task-sharding.svg?branch=master](https://travis-ci.org/LivePersonInc/task-sharding)
 [![npm version](https://img.shields.io/npm/v/task-sharding.svg)](https://www.npmjs.com/package/task-sharding)
 [![npm downloads](https://img.shields.io/npm/dm/task-sharding.svg)](https://www.npmjs.com/package/task-sharding)
 [![license](https://img.shields.io/npm/l/task-sharding.svg)](LICENSE)
