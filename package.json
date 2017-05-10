@@ -1,16 +1,13 @@
 {
   "name": "task-sharding",
   "version": "1.0.0",
-  "description": "Shards tasks in a cluster using zookeeper and consistent hashing",
+  "description": "Shards tasks in a cluster using consistent hashing",
   "scripts": {
-    "start": "cd examples; docker-compose up -d && docker-compose logs -f app",
-    "stop": "cd examples; docker-compose kill && docker-compose rm -f",
     "lint": "eslint lib/*; true",
     "test": "mocha"
   },
   "dependencies": {
-    "hashring": "^3.2.0",
-    "zoologist": "^0.5.8"
+    "hashring": "^3.2.0"
   },
   "author": {
     "name": "LivePersonInc",
@@ -20,6 +17,10 @@
     {
       "name": "Eitan Yarden",
       "email": "eitanya@liveperson.com"
+    },
+    {
+      "name": "Asaf Haddad",
+      "email": "hello@ous.im"
     }
   ],
   "devDependencies": {

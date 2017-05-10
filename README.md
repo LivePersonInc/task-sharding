@@ -6,7 +6,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/task-sharding.svg)](https://www.npmjs.com/package/task-sharding)
 [![license](https://img.shields.io/npm/l/task-sharding.svg)](LICENSE)
 
-This project demonstrates sharding responsiblity between nodes in a cluster, using zookeeper and constitent hashing
+This project demonstrates sharding responsiblity between nodes in a cluster, using consistent hashing
 
 ## Usage
 
@@ -15,51 +15,50 @@ This project demonstrates sharding responsiblity between nodes in a cluster, usi
 ```js
 const TaskSharding = require('task-sharding').TaskSharding;
 
-const taskSharding = new TaskSharding(
-	'127.0.0.1:2181', // String, zooKeeper connection string
-	[{ id: 1 },{ id: 2 },{ id: 3 }], // Array of tasks object with id property
-	{
-		serviceName: String, // path in the zooKeeper. Default is 'my/service/name/v1'.
-		delay: Number, // miliseconds from cluster change till firing the 'taskAdded','taskRemoved'. Default is 1000.
-	});
+const taskSharding = new TaskSharding({
+    selfNode: "myNodeIdentifier"
+});
+listNodes().then(list => {
+    taskSharding.addNode(list);
+});
+
+taskSharding.addTask("task1");
+taskSharding.addTask("task2");
+taskSharding.removeTask("task1");
+taskSharding.addNode("other1");
+taskSharding.addNode("other2");
+taskSharding.addNode("other3");
+taskSharding.removeNode("other2");
+
+
 ```
 
 ### Events
 
 ```js
-taskSharding.on('taskAdded', (newTaskConf, taskInfoAdder) => {
-  // Your logic here
+let currentlyAssigned = 0;
+taskSharding.on('task-assigned', id => {
+    ++currentlyAssigned;
+    debug("Task assigned %s",id);
+})
+taskSharding.on('task-revoked', id => {
+    --currentlyAssigned;
+    debug("Task revoked %s",id);
 });
 
-taskSharding.on('taskRemoved', (oldTaskInfo) => {
-  // Your logic here
-});
 ```
 
 ## Running the example
 
-### Prerequisites
-
-* docker-compose
-* npm
 
 ### Running
 
 In order to run it, download and unzip the repository. Then run:
 
 ```sh
-git clone https://github.com/LivePersonInc/task-sharding.git
-cd task-sharding
-npm i
-npm start
+node examples/index.js
 ```
-In the logs you can see the nodes' statements regarding their task responsablity.
-You can addd nodes to the cluster by opening another shell window and:
-
-```sh
-cd task-sharding/examples
-docker-compose scale app=10
-```
+In the logs you can see this node's statements regarding its task responsibility.
 
 In the logs you will see new nodes coming in and new work division. Then you can kill some of the nodes by cahnging the scale again:
 ```sh
@@ -69,46 +68,26 @@ docker-compose scale app=1
 The output should look like this:
 
 ```
-app_1  | add Alice
-app_1  | add Bob
-app_1  | add Charlie
-app_1  | add Dave
-app_1  | add Eve
+(27 tasks over 8 nodes. 4 assigned): Adding node other6
+(27 tasks over 8 nodes. 4 assigned): Added node other6
+(27 tasks over 8 nodes. 4 assigned): Adding new task task90
+(28 tasks over 8 nodes. 4 assigned): Adding new task task42
+(29 tasks over 8 nodes. 4 assigned): Adding new task task31
+(30 tasks over 8 nodes. 4 assigned): Adding new task task79
+(31 tasks over 8 nodes. 4 assigned): Adding new task task100
+(32 tasks over 8 nodes. 4 assigned): Making some random changes
+(32 tasks over 7 nodes. 4 assigned): Removing node other8
+(32 tasks over 7 nodes. 4 assigned): Removed node other8
+(32 tasks over 7 nodes. 4 assigned): Deleting existing task task22
+(31 tasks over 7 nodes. 4 assigned): Adding new task task64
+(32 tasks over 7 nodes. 4 assigned): Adding new task task96
+(33 tasks over 7 nodes. 4 assigned): Adding new task task81
+(34 tasks over 7 nodes. 4 assigned): Adding new task task54
+(35 tasks over 7 nodes. 4 assigned): Making some random changes
+(35 tasks over 6 nodes. 4 assigned): Removing node other3
 
-# after docker-compose scale app=5
-app_1  | remove Alice
-app_1  | remove Bob
-app_1  | remove Charlie
-app_1  | remove Dave
-app_1  | remove Eve
-app_2  | add Charlie
-app_5  | add Eve
-app_10 | add Bob
-app_10 | add Dave
-app_8  | add Alice
-
-# after docker-compose scale app=1
-examples_app_2 exited with code 137
-examples_app_4 exited with code 137
-examples_app_9 exited with code 137
-examples_app_6 exited with code 137
-examples_app_3 exited with code 137
-examples_app_7 exited with code 137
-examples_app_5 exited with code 137
-examples_app_10 exited with code 137
-examples_app_8 exited with code 137
-app_1  | add Alice
-app_1  | add Bob
-app_1  | add Charlie
-app_1  | add Dave
-app_1  | add Eve
 ```
 
-You can stop the servers using
-```sh
-cd task-sharding
-npm stop
-```
 
 ## Contributing
 
