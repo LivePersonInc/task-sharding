@@ -11,11 +11,11 @@ describe('Task Sharding Tests', () => {
             nodes: []
         });
         this.ownerships = [];
-        this.gts.on(GenTaskShard.TASK_OWNERSHIP_EVENT, (taskId) => {
+        this.gts.on(GenTaskShard.TASK_ASSIGNED_EVENT, (taskId) => {
             console.log("Received ownership %s",taskId);
             this.ownerships.push(taskId);
         });
-        this.gts.on(GenTaskShard.TASK_OWNERSHIP_REMOVED_EVENT, (taskId) => {
+        this.gts.on(GenTaskShard.TASK_REVOKED_EVENT, (taskId) => {
             console.log("Removed ownership %s",taskId);
             // this.ownerships.push(taskId);
         });
