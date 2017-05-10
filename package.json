@@ -1,6 +1,6 @@
 {
   "name": "task-sharding",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shards tasks in a cluster using consistent hashing",
   "scripts": {
     "lint": "eslint lib/*; true",
