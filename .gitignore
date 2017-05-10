@@ -2,6 +2,8 @@
 logs
 *.log
 npm-debug.log*
+task-sharding.iml
+yarn.lock
 
 # Runtime data
 pids
