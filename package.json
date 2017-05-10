@@ -1,6 +1,6 @@
 {
   "name": "task-sharding",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Shards tasks in a cluster using zookeeper and consistent hashing",
   "scripts": {
     "start": "cd examples; docker-compose up -d && docker-compose logs -f app",
