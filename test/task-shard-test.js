@@ -1,23 +1,30 @@
 'use strict';
 const expect = require('chai').expect;
-const Events = require('events');
-const GenTaskShard = require('../lib/gen-task-shard');
+const TaskSharding = require('../lib/task-sharding');
  
 describe('Task Sharding Tests', () => {
     beforeEach(()=>{
 
-        this.gts = new GenTaskShard({
+        this.gts = new TaskSharding({
             delay: 10,
             nodes: []
         });
         this.ownerships = [];
-        this.gts.on(GenTaskShard.TASK_ASSIGNED_EVENT, (taskId) => {
+        this.gts.on(TaskSharding.TASK_ASSIGNED_EVENT, (taskId) => {
             console.log("Received ownership %s",taskId);
+            const idx = this.ownerships.indexOf(taskId);
+            if(idx !== -1) {
+                throw new Error("Assigned event for task already assigned", taskId);
+            }
             this.ownerships.push(taskId);
         });
-        this.gts.on(GenTaskShard.TASK_REVOKED_EVENT, (taskId) => {
+        this.gts.on(TaskSharding.TASK_REVOKED_EVENT, (taskId) => {
             console.log("Removed ownership %s",taskId);
-            // this.ownerships.push(taskId);
+            const idx = this.ownerships.indexOf(taskId);
+            if(idx === -1) {
+                throw new Error("Revoked event for task already revoked", taskId);
+            }
+            this.ownerships.splice(idx,1);
         });
 
         this.expectOwnerships = function(ownerships) {
@@ -45,7 +52,7 @@ describe('Task Sharding Tests', () => {
     });
 
     // depends on current implementation of hashring in which specific key goes to specific node
-    it('should distribute taskAdded between nodes', () => {
+    it('distributing tasks into a set of nodes 1/3', () => {
         this.gts.addTask("hello1");
         this.gts.addTask("hello2");
         this.gts.addTask("hello3");
@@ -54,7 +61,7 @@ describe('Task Sharding Tests', () => {
         this.gts.selfNode = "node1";
         return this.expectOwnerships(["hello1","hello2"]);
     });
-    it('should distribute taskAdded between nodes', () => {
+    it('distributing tasks into a set of nodes 2/3', () => {
         this.gts.addTask("hello1");
         this.gts.addTask("hello2");
         this.gts.addTask("hello3");
@@ -63,7 +70,7 @@ describe('Task Sharding Tests', () => {
         this.gts.selfNode = "node2";
         return this.expectOwnerships(["hello3"]);
     });
-    it('should distribute taskAdded between nodes', () => {
+    it('distributing tasks into a set of nodes 3/3', () => {
         this.gts.addTask("hello1");
         this.gts.addTask("hello2");
         this.gts.addTask("hello3");
@@ -71,6 +78,22 @@ describe('Task Sharding Tests', () => {
         this.gts.addNode(["node1", "node2","node3"]);
         this.gts.selfNode = "node3";
         return this.expectOwnerships(["hello4"]);
+    });
+    it('should distribute tasks after node removal', () => {
+        this.gts.addTask("hello1");
+        this.gts.addTask("hello2");
+        this.gts.addTask("hello3");
+        this.gts.addTask("hello4");
+        this.gts.addNode(["node1", "node2","node3"]);
+        this.gts.selfNode = "node3";
+
+        return this.expectOwnerships(["hello4"]).then(() => {
+            this.gts.removeNode("node1");
+            return this.expectOwnerships(["hello4", "hello2"]);
+        }).then(() => {
+            this.gts.removeNode("node2");
+            return this.expectOwnerships(["hello4", "hello2", "hello1","hello3"]);
+        });
     });
  
     // depends on current implementation of hashring in which specific key goes to specific node
