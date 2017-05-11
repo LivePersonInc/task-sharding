@@ -1,0 +1,13 @@
+zk:
+  image: zookeeper
+  ports: 
+    - "2181"
+
+app:
+  image: node:slim
+  links: 
+    - zk
+  volumes:
+    - ../:/code
+  working_dir: /code
+  command: node examples/index.js

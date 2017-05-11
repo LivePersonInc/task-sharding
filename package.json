@@ -3,6 +3,8 @@
   "version": "1.0.1",
   "description": "Shards tasks in a cluster using consistent hashing",
   "scripts": {
+    "start": "cd examples; docker-compose up -d && docker-compose logs -f app",
+    "stop": "cd examples; docker-compose kill && docker-compose rm -f",
     "lint": "eslint lib/*; true",
     "test": "mocha"
   },
@@ -28,7 +30,8 @@
     "eslint": "^3.13.1",
     "mocha": "^3.2.0",
     "mockery": "^2.0.0",
-    "sinon": "^1.17.7"
+    "sinon": "^1.17.7",
+    "zoologist": "^0.5.9"
   },
   "repository": {
     "type": "git",
