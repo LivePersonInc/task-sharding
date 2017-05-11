@@ -1,6 +1,6 @@
 {
   "name": "task-sharding",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Shards tasks in a cluster using consistent hashing",
   "scripts": {
     "start": "cd examples; docker-compose up -d && docker-compose logs -f app",
