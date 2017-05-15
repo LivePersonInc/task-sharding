@@ -5,6 +5,7 @@
   "scripts": {
     "start": "cd examples; docker-compose up -d && docker-compose logs -f app",
     "stop": "cd examples; docker-compose kill && docker-compose rm -f",
+    "prepublish": "not-in-install && jsdoc -t node_modules/tsd-jsdoc -d ./dist -r ./lib || in-install",
     "lint": "eslint lib/*; true",
     "test": "mocha"
   },
@@ -26,11 +27,15 @@
     }
   ],
   "devDependencies": {
+    "@types/node": "^7.0.18",
     "chai": "^3.5.0",
     "eslint": "^3.13.1",
+    "in-publish": "^2.0.0",
+    "jsdoc": "^3.4.3",
     "mocha": "^3.2.0",
     "mockery": "^2.0.0",
     "sinon": "^1.17.7",
+    "tsd-jsdoc": "^2.0.0-beta.3",
     "zoologist": "^0.5.9"
   },
   "repository": {
@@ -54,5 +59,6 @@
     "npm": ">=3.0"
   },
   "main": "index.js",
+  "types": "dist/types.d.ts",
   "license": "MIT"
 }
