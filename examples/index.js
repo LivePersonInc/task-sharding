@@ -33,6 +33,7 @@ taskSharding.on('task-revoked', id => {
 const ClusterMonitor = require("./cluster-monitor-zoologist");
 
 const zkConnStr = `${process.env.ZK_PORT_2181_TCP_ADDR}:${process.env.ZK_PORT_2181_TCP_PORT}`;
+console.log("Connecting to %s", zkConnStr);
 const monitor = new ClusterMonitor({
     zkConnectionString: zkConnStr,
     basePath: 'services',
