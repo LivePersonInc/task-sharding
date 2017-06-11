@@ -1,7 +1,7 @@
 'use strict';
 const expect = require('chai').expect;
 const TaskSharding = require('../lib/task-sharding');
- 
+
 describe('Task Sharding Tests', () => {
     beforeEach(()=>{
 
@@ -42,7 +42,22 @@ describe('Task Sharding Tests', () => {
         };
 
     });
- 
+
+    it('test event name constants', () => {
+        expect(TaskSharding.TASK_ASSIGNED_EVENT).to.be.a('string');
+        expect(TaskSharding.TASK_REVOKED_EVENT).to.be.a('string');
+
+        expect(() => {
+            TaskSharding.TASK_ASSIGNED_EVENT = 'this should not be possible';
+            expect(TaskSharding.TASK_ASSIGNED_EVENT).to.be.equal('this should not be possible');
+        }).to.throw();
+
+        expect(() => {
+            TaskSharding.TASK_REVOKED_EVENT = 'this should not be possible';
+            expect(TaskSharding.TASK_REVOKED_EVENT).to.be.equal('this should not be possible');
+        }).to.throw();
+    });
+
     it('should fire taskAdded for single task and single node', () => {
         const myTask = "hello";
         this.gts.addTask(myTask);
@@ -95,7 +110,7 @@ describe('Task Sharding Tests', () => {
             return this.expectOwnerships(["hello4", "hello2", "hello1","hello3"]);
         });
     });
- 
+
     // depends on current implementation of hashring in which specific key goes to specific node
     // it('should fire taskRemoved when a newNode takes the task', done => {
     //     gts.on('taskAdded', (newTaskConf, taskInfoAdder) => {
