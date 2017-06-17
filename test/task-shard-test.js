@@ -152,4 +152,15 @@ describe('Task Sharding Tests', () => {
     //     configMonitorMock.emit('configsAdded',{task1:{ name: "hello" }});
     //     clusterMonitorMock.emit('clusterChange',"node1",["node1"]);
     // });
+
+    it('test addTask and removeTask in case of false-ish owner names like empty strings', () => {
+        const myTask = 'hello world';
+        this.gts.addTask(myTask);
+        this.gts.addNode(['']);
+        this.gts.selfNode = '';
+        return this.expectOwnerships([myTask])
+            .then(() => {
+                expect(this.gts.removeTask(myTask)).to.equal(true);
+            });
+    });
 });
